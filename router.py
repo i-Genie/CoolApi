@@ -1,6 +1,6 @@
 import inspect
-
 from container import Container
+from exceptions import HTTPException
 from request import Request
 from response import Response
 
@@ -9,6 +9,28 @@ class Router:
     def __init__(self) -> None:
         self.routes = {}
         self.middlewares = []
+        self.exception_handlers = {}
+
+    def handle_exception(
+        self,
+        exception_class,
+        handler
+    ):
+        self.exception_handlers[exception_class] = handler
+
+    def resolve_exception(
+        self, 
+        exception
+    ):
+        for(
+            exception_class, handler
+        ) in self.exception_handlers.items():
+            if isinstance(exception, exception_class):
+                return handler
+
+        return None
+            
+        
 
     def route(self, method, path, middleware = None):
         def wrapper(handler):
@@ -136,7 +158,33 @@ class Router:
             original_midddlewares
         )
 
-        response = pipeline()
+        try:
+            response = pipeline()
+        except HTTPException as e:
+            exception_handler = (
+                self.resolve_exception(e)
+            )
+            
+            if exception_handler:
+                return exception_handler(e)
+
+            if isinstance(
+                e,
+                HTTPException
+            ):
+                return Response(
+                    body=e.message,
+                    status=e.status
+                )
+            return Response(
+                body="internal Server Error",
+                status=500
+            )
+
+            # important Order:
+            #     specific first
+            #     general last
+            #     always
 
         if not isinstance(response, Response):
             response = Response(body=response)

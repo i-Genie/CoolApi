@@ -1,3 +1,4 @@
+from exceptions import HTTPException
 from middleware.authMiddleware import AuthMiddleware
 from middleware.rateLimitMiddleware import RateLimitMiddleware
 from request import Request
@@ -33,15 +34,22 @@ def users(request: Request):
 
 @router.post("/users")
 def create_users(request: Request):
-    return "User Created"
+    raise HTTPException(
+        "forbidden",
+        403
+    )
 
 @router.put("/users/{id}")
 def update_users(request: Request, id):
     return f"Updated: {id}"
     
 @router.delete("/users/{id}")
-def delete_users(request: Request, id: float):
-    return f"Deleted: {id}"
+def delete_users(request: Request):
+    raise HTTPException(
+        "forbiden",
+        403
+    )
+    # return f"Deleted: {id}"
 
 @router.get("/admin", middleware = [AuthMiddleware()])
 def admin(request):
@@ -50,7 +58,25 @@ def admin(request):
         status=403
     )
 
-response = router.dispatch("get", "/admin")
+
+def http_exception_handler(exception):
+    return Response(
+        body={
+            "error": exception.message,
+        },
+        status=exception.status
+    )
+
+router.handle_exception(
+    HTTPException,
+    http_exception_handler
+)
+
+response = router.dispatch("post", "/users")
 
 print(response.status)
 print(response.send())
+
+
+
+

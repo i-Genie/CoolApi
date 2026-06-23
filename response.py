@@ -2,7 +2,7 @@ import json
 
 
 class Response:
-    def __init__(self, body="", status=200, headers=None):
+    def __init__(self, body={}, status=200, headers=None):
         self.body = body
         self.status = status
         self.headers = headers or {}
@@ -15,4 +15,5 @@ class Response:
                 self.body
             )
 
-        return str(self.body)
+        return str(self.body) 
+        
