@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 CoolApi is a lightweight educational python web framwork built from scratch to understand routing, dependency injection, and middlewares and internals.
 
 FEATURES:
@@ -15,3 +16,7 @@ core features:
 ✅ Route middleware
 ✅ Route param type casting
 ✅ Proper HTTP error distinctions (404 vs 400)
+=======
+# CoolApi
+CoolApi is a lightweight educational python web framwork built from scratch to understand routing, dependency injection, and middlewares and internals.
+>>>>>>> 6cf9d4125f5246862d8983d0019bd70d2efa60c4

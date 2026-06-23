@@ -2,6 +2,7 @@ import inspect
 
 from container import Container
 from request import Request
+from response import Response
 
 
 class Router:
@@ -130,12 +131,18 @@ class Router:
         self.middlewares = all_middlewares
          
 
-        response = pipeline = self.build_pipeline(request, final_handler)
+        pipeline = self.build_pipeline(request, final_handler)
         self.middlewares = (
             original_midddlewares
         )
 
-        return response()
+        response = pipeline()
+
+        if not isinstance(response, Response):
+            response = Response(body=response)
+            return response
+
+        return response
 
 
         

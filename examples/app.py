@@ -3,6 +3,7 @@ from middleware.rateLimitMiddleware import RateLimitMiddleware
 from request import Request
 from router import Router
 from userService import UserService
+from response import Response
 
 router = Router()
 
@@ -18,8 +19,17 @@ router = Router()
 @router.get("/home", middleware=[ RateLimitMiddleware()])
 def home(request: Request, user_service: UserService):
     return [
-        user_service.get_users(),
+        user_service.get_users(), 
     ]
+
+@router.get("/users")
+def users(request: Request):
+    return {
+        "users": [
+            "John",
+            "Mary"
+        ]
+    }
 
 @router.post("/users")
 def create_users(request: Request):
@@ -35,6 +45,12 @@ def delete_users(request: Request, id: float):
 
 @router.get("/admin", middleware = [AuthMiddleware()])
 def admin(request):
-    return "Admin"
+    return Response(
+        body="Forbidden",
+        status=403
+    )
 
-print(router.dispatch("get", "/home"))
+response = router.dispatch("get", "/admin")
+
+print(response.status)
+print(response.send())
