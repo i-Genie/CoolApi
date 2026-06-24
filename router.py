@@ -102,7 +102,10 @@ class Router:
         # print(route)
 
         if not route:
-            return "404 Not Found"
+            return Response(
+                body="404 Not Found",
+                status=404
+            )
 
         handler = route["handler"]
         route_middlewares = route.get("middleware", [])
@@ -132,7 +135,10 @@ class Router:
                 try:
                     value = annotation(raw_value)
                 except ValueError:
-                    return "400 Bad Request"
+                    return Response(
+                        body="400 Bad Request",
+                        status=400
+                    )
                     
                 dependencies.append(
                     value
@@ -180,11 +186,6 @@ class Router:
                 body="internal Server Error",
                 status=500
             )
-
-            # important Order:
-            #     specific first
-            #     general last
-            #     always
 
         if not isinstance(response, Response):
             response = Response(body=response)

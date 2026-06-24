@@ -5,6 +5,7 @@ from request import Request
 from router import Router
 from userService import UserService
 from response import Response
+from server import run_server
 
 router = Router()
 
@@ -41,7 +42,7 @@ def create_users(request: Request):
 
 @router.put("/users/{id}")
 def update_users(request: Request, id):
-    return f"Updated: {id}"
+    return "hello"
     
 @router.delete("/users/{id}")
 def delete_users(request: Request):
@@ -54,7 +55,7 @@ def delete_users(request: Request):
 @router.get("/admin", middleware = [AuthMiddleware()])
 def admin(request):
     return Response(
-        body="Forbidden",
+        body="403 Forbidden",
         status=403
     )
 
@@ -72,11 +73,11 @@ router.handle_exception(
     http_exception_handler
 )
 
-response = router.dispatch("post", "/users")
+# response = router.dispatch("put", "/users/2")
 
-print(response.status)
-print(response.send())
+# print(response.status)
+# print(response.send())
 
-
+run_server(router)
 
 
