@@ -94,7 +94,8 @@ class Router:
         self, 
         method, 
         path, 
-        query=None
+        query=None,
+        body=None
     ):
         primitive_types = (
             int,
@@ -119,7 +120,8 @@ class Router:
         request = Request(
             method, 
             path, 
-            query=query or {}
+            query = query or {},
+            body = body or {}
         )
 
         container = Container()

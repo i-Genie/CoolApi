@@ -40,6 +40,12 @@ def users(request: Request):
         ]
     }
 
+@router.post("/members")
+def create_members(request: Request):
+    return {
+        "received": request.body
+    }
+
 @router.post("/users")
 def create_users(request: Request):
     raise HTTPException(

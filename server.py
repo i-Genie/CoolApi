@@ -1,4 +1,5 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
+import json
 from urllib.parse import (urlparse, parse_qs)
 
 # from router import Router
@@ -27,10 +28,43 @@ class RequestHandler(BaseHTTPRequestHandler):
             else:
                 query_params[key] = values
 
+        content_length = int(
+            self.headers.get("Content-Length", 0)
+        )
+
+        raw_body = self.rfile.read(
+            content_length
+        )
+
+        body = {}
+
+        if raw_body:
+            try:
+                body = json.loads(raw_body.decode())
+            except json.JSONDecodeError:
+                self.send_response(400)
+
+                self.send_header(
+                    "Content-Type",
+                    "application/json"
+                )
+
+                self.end_headers()
+
+                self.wfile.write(
+                    json.dumps({
+                        "error": "Invalid JSON"
+                    }).encode()
+                )
+
+                return
+
+                
         response = self.router.dispatch(
             method,
             path,
-            query_params
+            query_params,
+            body=body
         )
 
         self.send_response(
