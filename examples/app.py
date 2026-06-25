@@ -27,6 +27,9 @@ def home(request: Request, user_service: UserService):
 @router.get("/users")
 def users(request: Request):
     return {
+        "auth": request.headers.get(
+            "authorization"
+        ),
         "users": [
             "John",
             "Mary"

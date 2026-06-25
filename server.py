@@ -19,6 +19,10 @@ class RequestHandler(BaseHTTPRequestHandler):
         path = parsed.path
         raw_query = parse_qs(parsed.query)
         method = self.command
+        headers = {}
+
+        for key, values in self.headers.items():
+            headers[key.lower()] = values
 
         query_params ={}
 
@@ -64,7 +68,8 @@ class RequestHandler(BaseHTTPRequestHandler):
             method,
             path,
             query_params,
-            body=body
+            body=body,
+            headers = headers
         )
 
         self.send_response(
