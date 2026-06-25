@@ -30,6 +30,13 @@ def users(request: Request):
         "users": [
             "John",
             "Mary"
+        ],
+        
+        "query": [
+           {
+               "page": request.query.get('page'),
+               "tags": request.query.get('tags'),
+           }
         ]
     }
 
@@ -51,6 +58,14 @@ def delete_users(request: Request):
         403
     )
     # return f"Deleted: {id}"
+    # 
+    
+@router.get("/users/{id}")
+def get_users(request: Request, id):
+    return Response(
+        body=id,
+        status=200
+    )
 
 @router.get("/admin", middleware = [AuthMiddleware()])
 def admin(request):

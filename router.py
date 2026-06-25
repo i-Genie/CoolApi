@@ -90,7 +90,12 @@ class Router:
         return wrapped
 
 
-    def dispatch(self, method, path):
+    def dispatch(
+        self, 
+        method, 
+        path, 
+        query=None
+    ):
         primitive_types = (
             int,
             str,
@@ -111,7 +116,11 @@ class Router:
         route_middlewares = route.get("middleware", [])
         route_params = route.get("params", {})
             
-        request = Request(method, path)
+        request = Request(
+            method, 
+            path, 
+            query=query or {}
+        )
 
         container = Container()
  

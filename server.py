@@ -1,13 +1,12 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from urllib.parse import urlparse
+from urllib.parse import (urlparse, parse_qs)
 
-from router import Router
+# from router import Router
 
 class RequestHandler(BaseHTTPRequestHandler):
     router = None
 
     def do_GET(self):
-        print('get hit')
         self.handle_request()
 
     def do_POST(self):
@@ -17,11 +16,21 @@ class RequestHandler(BaseHTTPRequestHandler):
         parsed = urlparse(self.path)
         
         path = parsed.path
+        raw_query = parse_qs(parsed.query)
         method = self.command
+
+        query_params ={}
+
+        for key, values in raw_query.items():
+            if len(values) == 1:
+                query_params[key] = values[0]
+            else:
+                query_params[key] = values
 
         response = self.router.dispatch(
             method,
-            path
+            path,
+            query_params
         )
 
         self.send_response(
