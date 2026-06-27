@@ -96,7 +96,8 @@ class Router:
         path, 
         query=None,
         body=None,
-        headers=None
+        headers=None,
+        cookies=None
     ):
         primitive_types = (
             int,
@@ -123,7 +124,8 @@ class Router:
             path, 
             query = query or {},
             body = body or {},
-            headers=headers
+            headers=headers,
+            cookies=cookies
         )
 
         container = Container()

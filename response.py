@@ -25,4 +25,16 @@ class Response:
             ] = "text/plain"
 
         return str(self.body) 
+
+    def set_cookie(
+        self,
+        key,
+        value
+    ):
+        if "set-cookie" not in self.headers:
+            self.headers["set-cookie"] = []
+
+        self.headers["set-cookie"].append(
+            f"{key}={value}"
+        )
         

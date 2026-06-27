@@ -92,6 +92,28 @@ def html(request: Request):
         }
     )
 
+@router.get("/login")
+def login(request):
+    response = Response(
+        body = "logged in"
+    )
+
+    response.set_cookie(
+        "session_id",
+        "abc123"
+    )
+
+    return response
+
+@router.get("/profile")
+def profile(request: Request):
+    return {
+        "session": request.cookies.get(
+            "session_id"
+        )
+    }
+        
+
 
 def http_exception_handler(exception):
     return Response(

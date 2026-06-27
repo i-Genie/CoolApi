@@ -20,6 +20,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         raw_query = parse_qs(parsed.query)
         method = self.command
         headers = {}
+        cookies = {}
 
         for key, values in self.headers.items():
             headers[key.lower()] = values
@@ -35,6 +36,15 @@ class RequestHandler(BaseHTTPRequestHandler):
         content_length = int(
             self.headers.get("Content-Length", 0)
         )
+
+        # get cookies from header
+        cookie_header = headers.get("cookie")
+
+        if cookie_header:
+            for item in cookie_header.split(";"):
+                key, value = item.strip().split("=")
+                cookies[key] = value
+                
 
         raw_body = self.rfile.read(
             content_length
@@ -63,13 +73,14 @@ class RequestHandler(BaseHTTPRequestHandler):
 
                 return
 
-                
+        # creating the response here and dispatching to the router class
         response = self.router.dispatch(
             method,
             path,
             query_params,
             body=body,
-            headers = headers
+            headers = headers,
+            cookies=cookies
         )
 
         body = response.send()
@@ -79,10 +90,18 @@ class RequestHandler(BaseHTTPRequestHandler):
         )
 
         for key, value in response.headers.items():
-            self.send_header(
-                key,
-                value
-            )
+            if isinstance(value, list):
+                for item in value:
+                    self.send_header(
+                        key,
+                        item
+                    )
+            else:
+                self.send_header(
+                    key,
+                    value
+                )
+                
 
 
         self.end_headers()
