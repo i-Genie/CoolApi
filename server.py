@@ -72,19 +72,23 @@ class RequestHandler(BaseHTTPRequestHandler):
             headers = headers
         )
 
+        body = response.send()
+
         self.send_response(
             response.status
         )
 
-        self.send_header(
-            "Content-Type",
-            "application/json"
-        )
+        for key, value in response.headers.items():
+            self.send_header(
+                key,
+                value
+            )
+
 
         self.end_headers()
 
         self.wfile.write(
-            response.send().encode()
+            body.encode()
         )
 
 def run_server(router, host="127.0.0.1", port=8000):

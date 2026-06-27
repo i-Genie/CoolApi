@@ -83,6 +83,15 @@ def admin(request):
         status=403
     )
 
+@router.get("/html")
+def html(request: Request):
+    return Response(
+        body=f"<h1>Hello {request.path}</h1>",
+        headers={
+            "Content-Type": "text/html"
+        }
+    )
+
 
 def http_exception_handler(exception):
     return Response(
