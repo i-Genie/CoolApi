@@ -3,11 +3,13 @@ from middleware.authMiddleware import AuthMiddleware
 from middleware.rateLimitMiddleware import RateLimitMiddleware
 from request import Request
 from router import Router
+# from session_store import SessionStore
 from userService import UserService
 from response import Response
 from server import run_server
 
 router = Router()
+# session_store = SessionStore()
 
 # router.middlewares.append(
 #     RateLimitMiddleware()
@@ -94,22 +96,36 @@ def html(request: Request):
 
 @router.get("/login")
 def login(request):
+    session_id = Router.session_store.create()
+
+    Router.session_store.set(
+        session_id,
+        "user_id",
+        42
+    )
+    
     response = Response(
         body = "logged in"
     )
 
     response.set_cookie(
         "session_id",
-        "abc123"
+        session_id
     )
 
     return response
 
 @router.get("/profile")
 def profile(request: Request):
+    if not request.session:
+        return Response(
+            body="Unauthorized",
+            status=401
+        )
+        
     return {
-        "session": request.cookies.get(
-            "session_id"
+        "user_id": request.session.get(
+            "user_id"
         )
     }
         

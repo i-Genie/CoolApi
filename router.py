@@ -3,9 +3,12 @@ from container import Container
 from exceptions import HTTPException
 from request import Request
 from response import Response
+from session_store import SessionStore
 
 
 class Router:
+    session_store = SessionStore()
+    
     def __init__(self) -> None:
         self.routes = {}
         self.middlewares = []
@@ -97,7 +100,8 @@ class Router:
         query=None,
         body=None,
         headers=None,
-        cookies=None
+        cookies=None,
+        session=None
     ):
         primitive_types = (
             int,
@@ -125,8 +129,21 @@ class Router:
             query = query or {},
             body = body or {},
             headers=headers,
-            cookies=cookies
+            cookies=cookies,
+            session=session or None
         )
+
+        session_id = request.cookies.get(
+            "session_id"
+        )
+
+        if session_id:
+            request.session = Router.session_store.get(
+                session_id
+            )
+           
+        else:
+            request.session = None
 
         container = Container()
  

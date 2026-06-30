@@ -1,3 +1,8 @@
+# from typing import Optional
+
+from typing import Any, Optional
+
+
 class Request:
     def __init__(
         self, 
@@ -7,6 +12,7 @@ class Request:
         body=None, 
         headers=None, 
         cookies=None,
+        session=None,
         user=None
     ) -> None:
         self.method = method
@@ -15,6 +21,7 @@ class Request:
         self.body = body or {}
         self.headers = headers or {}
         self.cookies = cookies or {}
+        self.session = session
         self.user = user
     
 
