@@ -115,19 +115,51 @@ def login(request):
 
     return response
 
-@router.get("/profile")
+@router.get(
+    "/profile",
+    middleware=[
+        AuthMiddleware()
+    ]
+)
 def profile(request: Request):
-    if not request.session:
-        return Response(
-            body="Unauthorized",
-            status=401
-        )
-        
     return {
         "user_id": request.session.get(
             "user_id"
         )
     }
+
+@router.get(
+    "logout",
+    middleware=[
+        AuthMiddleware()
+    ]
+)
+def logout(request: Request):
+    session_id = request.cookies.get(
+        "session_id"
+    )
+
+    print(
+        Router.session_store.sessions
+    )
+
+    Router.session_store.destroy(
+        session_id
+    )
+
+    print(
+        Router.session_store.sessions
+    )
+
+    response = Response(
+        body="Logged Out"
+    )
+
+    response.delete_cookie(
+       "session_id"
+    )
+
+    return response
         
 
 

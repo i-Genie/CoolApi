@@ -29,3 +29,12 @@ class SessionStore:
     ):
         if session_id in self.sessions:
             self.sessions[session_id][key] = value
+
+    def destroy(
+        self,
+        session_id
+    ):
+        if session_id in self.sessions:
+            del self.sessions[
+                session_id
+            ]

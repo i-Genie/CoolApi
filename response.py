@@ -37,4 +37,15 @@ class Response:
         self.headers["set-cookie"].append(
             f"{key}={value}"
         )
+
+    def delete_cookie(
+        self,
+        key
+    ):
+        if "set-cookie" not in self.headers:
+            self.headers["set-cookies"] = []
+
+        self.headers["set-cookies"].append(
+            f"{key}=; Max-Age=0"
+        )
         
